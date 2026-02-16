@@ -76,13 +76,13 @@ export function VapiDemo() {
                         <FormLabel>Tipo de Asistente</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger className="h-12 bg-background/50 border-border focus:ring-primary">
+                            <SelectTrigger className="h-12 bg-background border-border focus:ring-primary relative z-20">
                               <SelectValue placeholder="Selecciona un asistente" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>
+                          <SelectContent className="bg-card border-border shadow-xl z-50">
                             {assistantOptions.map((option) => (
-                              <SelectItem key={option} value={option}>
+                              <SelectItem key={option} value={option} className="hover:bg-primary/10">
                                 {option}
                               </SelectItem>
                             ))}

@@ -1,7 +1,5 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-// Static import for the robot hero image
-import robotImg from "@assets/image_1771268402642.png";
 
 export function Hero() {
   const scrollToForm = () => {
@@ -29,11 +27,11 @@ export function Hero() {
           </div>
           
           <h1 className="text-5xl lg:text-7xl font-display font-bold leading-tight">
-            Desata el <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60 text-glow">poder</span> de tu IA
+            Impulsa tu <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60 text-glow">Crecimiento</span> con IA
           </h1>
           
           <p className="text-xl text-muted-foreground leading-relaxed max-w-xl">
-            Aprende a pedirle exactamente lo que necesitas. De respuestas mediocres a resultados expertos que transforman tu negocio.
+            Soluciones inteligentes personalizadas para optimizar tu negocio. Desde automatización de procesos hasta asistentes de voz expertos que elevan la experiencia de tus clientes.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4">
@@ -59,14 +57,24 @@ export function Hero() {
           transition={{ duration: 1, delay: 0.2 }}
           className="relative lg:h-[800px] flex items-center justify-center"
         >
-          {/* Glowing backdrop for image */}
+          {/* Glowing backdrop for subtle depth */}
           <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full transform translate-y-20" />
           
-          <img 
-            src={robotImg} 
-            alt="AI Robot Assistant" 
-            className="relative z-10 w-full max-w-lg mx-auto drop-shadow-2xl animate-in fade-in slide-in-from-bottom-10 duration-1000"
-          />
+          <div className="relative z-10 w-full max-w-lg mx-auto aspect-square rounded-3xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 backdrop-blur-3xl flex items-center justify-center overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent animate-pulse" />
+            <div className="relative text-center p-8 space-y-4">
+              <div className="w-24 h-24 bg-primary/20 rounded-full mx-auto flex items-center justify-center">
+                <div className="w-12 h-12 bg-primary rounded-full animate-ping opacity-20" />
+                <div className="absolute w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold">Innovación Inteligente</h3>
+              <p className="text-muted-foreground">Optimizando el futuro de Puerto Rico a través de tecnología de vanguardia.</p>
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>
