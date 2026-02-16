@@ -1,5 +1,5 @@
 import { leads, type InsertLead, type Lead } from "@shared/schema";
-import { db } from "./db";
+//import { db } from "./db";
 
 export interface IStorage {
   createLead(lead: InsertLead): Promise<Lead>;

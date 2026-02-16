@@ -1,4 +1,4 @@
-import logo from "@assets/image_1771268409395.png";
+import logo from "@assets/logo_aiborinquen.png";
 
 export function Footer() {
   return (
@@ -6,7 +6,7 @@ export function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-2">
-            <img src={logo} alt="Logo" className="h-12 w-auto mb-6" />
+            <img src={logo} alt="Logo" className="h-16 max-h-full w-auto mb-6" />
             <p className="text-muted-foreground max-w-xs">
               Transformando negocios a través de soluciones de Inteligencia Artificial avanzadas y personalizadas.
             </p>
@@ -32,7 +32,7 @@ export function Footer() {
         
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} AI Borinquen. Todos los derechos reservados.</p>
-          <p>Potenciado por Talkoraia</p>
+          <p>AI Borinquen, PR.</p>
         </div>
       </div>
     </footer>

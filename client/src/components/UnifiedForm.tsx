@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Phone, Loader2, Send, CheckCircle2 } from "lucide-react";
+import { Phone, Loader2, Send, CheckCircle2, Volume2, Pause } from "lucide-react";
 import { 
   Form, 
   FormControl, 
@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { insertLeadSchema, assistantOptions, type InsertLead } from "@shared/schema";
+import { insertLeadSchema, assistantOptions, voiceOptions, type InsertLead } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -28,6 +28,8 @@ export function UnifiedForm() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [playingVoice, setPlayingVoice] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const form = useForm<InsertLead>({
     resolver: zodResolver(insertLeadSchema),
@@ -37,8 +39,39 @@ export function UnifiedForm() {
       phone: "",
       businessDescription: "",
       assistantType: assistantOptions[0],
+      voiceType: voiceOptions[0].id,
     },
   });
+
+  const playVoiceSample = (voiceId: string, audioUrl: string) => {
+    if (playingVoice === voiceId && audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setPlayingVoice(null);
+    } else {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      
+      const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+      
+      audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
+        toast({
+          title: "Error",
+          description: "No se pudo reproducir el audio de ejemplo",
+          variant: "destructive",
+        });
+      });
+      
+      setPlayingVoice(voiceId);
+      
+      audio.onended = () => {
+        setPlayingVoice(null);
+      };
+    }
+  };
 
   const onSubmit = async (data: InsertLead) => {
     setIsSubmitting(true);
@@ -63,7 +96,7 @@ export function UnifiedForm() {
   };
 
   return (
-    <section id="demo-section" className="py-24 bg-secondary/30 relative overflow-hidden">
+    <section id="lead-form" className="py-24 bg-secondary/30 relative overflow-hidden">
       <div className="container mx-auto px-4 max-w-5xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
@@ -138,9 +171,9 @@ export function UnifiedForm() {
                               <SelectValue placeholder="Selecciona uno" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent className="bg-card border-border shadow-xl z-50">
+                          <SelectContent className="bg-background border-border shadow-xl z-50">
                             {assistantOptions.map((option) => (
-                              <SelectItem key={option} value={option}>
+                              <SelectItem key={option} value={option} className="bg-background hover:bg-accent">
                                 {option}
                               </SelectItem>
                             ))}
@@ -151,6 +184,44 @@ export function UnifiedForm() {
                     )}
                   />
                 </div>
+
+                <FormField
+                  control={form.control}
+                  name="voiceType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Selecciona la Voz</FormLabel>
+                      <div className="grid grid-cols-2 gap-2">
+                        {voiceOptions.map((voice) => (
+                          <button
+                            key={voice.id}
+                            type="button"
+                            onClick={() => {
+                              field.onChange(voice.id);
+                              playVoiceSample(voice.id, voice.audioUrl);
+                            }}
+                            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
+                              field.value === voice.id 
+                                ? 'bg-primary/20 border-primary border-2'
+                                : 'bg-background/50 border border-border hover:bg-accent'
+                            }`}
+                          >
+                            {playingVoice === voice.id ? (
+                              <Pause className="w-4 h-4 text-primary" />
+                            ) : (
+                              <Volume2 className="w-4 h-4" />
+                            )}
+                            <span className="truncate">{voice.name.split(' - ')[1]}</span>
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Haz clic en los botones para seleccionar y escuchar cada voz
+                      </p>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={form.control}
@@ -180,7 +251,7 @@ export function UnifiedForm() {
                   ) : isSuccess ? (
                     <><CheckCircle2 /> ¡Llamada en camino!</>
                   ) : (
-                    <><Phone className="w-5 h-5" /> Llamadme Ahora</>
+                    <><Phone className="w-5 h-5" /> Llamame Ahora</>
                   )}
                 </button>
               </form>
