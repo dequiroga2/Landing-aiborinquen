@@ -1,7 +1,6 @@
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
-import { VapiDemo } from "@/components/VapiDemo";
-import { LeadForm } from "@/components/LeadForm";
+import { UnifiedForm } from "@/components/UnifiedForm";
 import { Footer } from "@/components/Footer";
 
 export default function Home() {
@@ -31,8 +30,7 @@ export default function Home() {
           </div>
         </section>
 
-        <VapiDemo />
-        <LeadForm />
+        <UnifiedForm />
       </main>
       
       <Footer />

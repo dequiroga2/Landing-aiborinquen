@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { insertLeadSchema, insertVapiCallSchema, leads, vapiCalls } from './schema';
+import { insertLeadSchema, leads } from './schema';
 
 export const errorSchemas = {
   validation: z.object({
@@ -17,18 +17,6 @@ export const api = {
       method: 'POST' as const,
       path: '/api/leads',
       input: insertLeadSchema,
-      responses: {
-        200: z.object({ success: z.boolean(), message: z.string() }),
-        400: errorSchemas.validation,
-        500: errorSchemas.internal,
-      },
-    },
-  },
-  vapi: {
-    call: {
-      method: 'POST' as const,
-      path: '/api/vapi/call',
-      input: insertVapiCallSchema,
       responses: {
         200: z.object({ success: z.boolean(), message: z.string() }),
         400: errorSchemas.validation,
