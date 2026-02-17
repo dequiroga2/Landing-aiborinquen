@@ -23,15 +23,15 @@ export function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
-            <span>Inteligencia Artificial de Nueva Generación</span>
+            <span>#1 Primer asistente de llamadas en Puerto Rico</span>
           </div>
           
           <h1 className="text-4xl lg:text-6xl font-display font-bold leading-tight">
-            Impulsa tu <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60 text-glow">Crecimiento</span> con IA
+            El primer asistente de <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60 text-glow">recepción y contacto</span> en Puerto Rico
           </h1>
           
           <p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
-            Soluciones inteligentes personalizadas para optimizar tu negocio. Desde automatización de procesos hasta asistentes de voz expertos que elevan la experiencia de tus clientes.
+            Recibe llamadas, atiende prospectos y da seguimiento automático con IA conversacional diseñada para negocios en Puerto Rico.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4">
