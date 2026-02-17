@@ -7,7 +7,7 @@ export function Hero() {
   };
 
   return (
-    <section className="relative min-h-[75vh] flex items-center pt-12 pb-8 overflow-hidden">
+    <section className="relative min-h-[75vh] flex items-center pt-28 md:pt-20 pb-8 overflow-hidden">
       {/* Background Gradient Mesh */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background -z-10" />
       
