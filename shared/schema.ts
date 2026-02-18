@@ -7,12 +7,30 @@ export const leads = pgTable("leads", {
   name: text("name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
-  businessDescription: text("business_description").notNull(),
+  businessDescription: text("business_description").default("").notNull(),
   assistantType: text("assistant_type").notNull(),
   voiceType: text("voice_type").notNull(),
 });
 
-export const insertLeadSchema = createInsertSchema(leads).omit({ id: true });
+export const insertLeadSchema = createInsertSchema(leads)
+  .omit({ id: true })
+  .extend({
+    email: z.string().email("Ingresa un email válido"),
+    phone: z.string().min(10, "Ingresa un teléfono válido"),
+    businessDescription: z.string().default(""),
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.assistantType === "Asistente personalizado" &&
+      (!data.businessDescription || data.businessDescription.trim().length === 0)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["businessDescription"],
+        message: "La descripción del negocio es requerida para asistente personalizado",
+      });
+    }
+  });
 export type InsertLead = z.infer<typeof insertLeadSchema>;
 export type Lead = typeof leads.$inferSelect;
 
@@ -20,7 +38,7 @@ export const assistantOptions = [
   "Asistente para clinicas y profesionales",
   "Asistente para restaurantes",
   "Asistente para hoteles",
-  "Asistente general"
+  "Asistente personalizado"
 ] as const;
 
 export const voiceOptions = [

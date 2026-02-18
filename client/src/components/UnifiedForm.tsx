@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
@@ -42,6 +42,14 @@ export function UnifiedForm() {
       voiceType: voiceOptions[0].id,
     },
   });
+
+  const selectedAssistantType = form.watch("assistantType");
+
+  useEffect(() => {
+    if (selectedAssistantType !== "Asistente personalizado") {
+      form.setValue("businessDescription", "");
+    }
+  }, [selectedAssistantType, form]);
 
   const playVoiceSample = (voiceId: string, audioUrl: string) => {
     if (playingVoice === voiceId && audioRef.current) {
@@ -151,7 +159,7 @@ export function UnifiedForm() {
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Teléfono</FormLabel>
+                        <FormLabel>Teléfono (Código de país)</FormLabel>
                         <FormControl>
                           <Input placeholder="+1 (555) 000-0000" {...field} className="bg-background/50" />
                         </FormControl>
@@ -223,23 +231,25 @@ export function UnifiedForm() {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="businessDescription"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Descripción del Negocio</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Cuéntanos sobre tu empresa..." 
-                          className="min-h-[100px] bg-background/50 resize-none"
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {selectedAssistantType === "Asistente personalizado" && (
+                  <FormField
+                    control={form.control}
+                    name="businessDescription"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Descripción del Negocio</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Cuentanos sobre el negocio con el que quieres hacer la prueba..." 
+                            className="min-h-[100px] bg-background/50 resize-none"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
                 <button
                   type="submit"
