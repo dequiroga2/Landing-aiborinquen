@@ -48,7 +48,7 @@ export default async function handler(
       voiceType
     };
 
-    const webhookUrl = process.env.N8N_WEBHOOK_URL || "https://aiborinquen.app.n8n.cloud/webhook-test/outbound";
+    const webhookUrl = process.env.N8N_WEBHOOK_URL || "https://aiborinquen.app.n8n.cloud/webhook/outbound";
     const webhookPayload = {
       nombreCliente: data.name,
       email: data.email,
