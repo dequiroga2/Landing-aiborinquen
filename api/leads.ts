@@ -1,26 +1,4 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { z } from "zod";
-
-// Schema de validación
-const insertLeadSchema = z.object({
-  name: z.string().min(1, "El nombre es requerido"),
-  email: z.string().email("Ingresa un email válido"),
-  phone: z.string().min(10, "Ingresa un teléfono válido"),
-  businessDescription: z.string().default(""),
-  assistantType: z.string().min(1, "Selecciona un tipo de asistente"),
-  voiceType: z.string().min(1, "Selecciona una voz"),
-}).superRefine((data, ctx) => {
-  if (
-    data.assistantType === "Asistente personalizado" &&
-    (!data.businessDescription || data.businessDescription.trim().length === 0)
-  ) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ["businessDescription"],
-      message: "La descripción del negocio es requerida para asistente personalizado",
-    });
-  }
-});
 
 export default async function handler(
   req: VercelRequest,
@@ -34,32 +12,41 @@ export default async function handler(
   try {
     console.log("Received lead data:", req.body);
     
-    const normalizedBody = {
-      ...req.body,
-      businessDescription:
-        typeof req.body?.businessDescription === "string"
-          ? req.body.businessDescription
-          : "",
-    };
-
-    console.log("Normalized body:", normalizedBody);
-
-    const parsed = insertLeadSchema.safeParse(normalizedBody);
-    if (!parsed.success) {
-      console.error("Lead validation failed", {
-        body: normalizedBody,
-        issues: parsed.error.issues,
-      });
+    // Validación básica
+    const { name, email, phone, businessDescription, assistantType, voiceType } = req.body;
+    
+    if (!name || !email || !phone || !assistantType || !voiceType) {
       return res.status(400).json({
         error: "Invalid form data",
-        details: parsed.error.issues.map((issue) => ({
-          path: issue.path.join("."),
-          message: issue.message,
-        })),
+        details: "Missing required fields"
       });
     }
 
-    const data = parsed.data;
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        error: "Invalid form data",
+        details: "Invalid email format"
+      });
+    }
+
+    // Validar si es personalizado
+    if (assistantType === "Asistente personalizado" && (!businessDescription || businessDescription.trim().length === 0)) {
+      return res.status(400).json({
+        error: "Invalid form data",
+        details: "Business description is required for custom assistant"
+      });
+    }
+
+    const data = {
+      name,
+      email,
+      phone,
+      businessDescription: businessDescription || "",
+      assistantType,
+      voiceType
+    };
 
     const webhookUrl = process.env.N8N_WEBHOOK_URL || "https://aiborinquen.app.n8n.cloud/webhook-test/outbound";
     const webhookPayload = {
@@ -93,8 +80,8 @@ export default async function handler(
       } else {
         console.log("Webhook sent successfully");
       }
-    } catch (error) {
-      console.error("Failed to send unified lead to N8N:", error);
+    } catch (webhookError) {
+      console.error("Failed to send unified lead to N8N:", webhookError);
       return res.status(500).json({ 
         error: "Failed to connect to webhook service" 
       });
@@ -102,17 +89,11 @@ export default async function handler(
 
     return res.json({ success: true, message: "Información enviada. Recibirás una llamada pronto." });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({
-        error: "Invalid form data",
-        details: error.issues.map((issue) => ({
-          path: issue.path.join("."),
-          message: issue.message,
-        })),
-      });
-    }
-
     console.error("Failed processing /api/leads", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ 
+      error: "Internal server error",
+      details: error instanceof Error ? error.message : "Unknown error"
+    });
   }
 }
+
