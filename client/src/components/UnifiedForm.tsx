@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Phone, Loader2, Send, CheckCircle2, Volume2, Pause } from "lucide-react";
+import { Phone, Loader2, Send, CheckCircle2, Volume2, Pause, Info } from "lucide-react";
 import { 
   Form, 
   FormControl, 
@@ -18,9 +18,16 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { insertLeadSchema, assistantOptions, voiceOptions, type InsertLead } from "@shared/schema";
+import { insertLeadSchema, assistantOptions, assistantDetails, voiceOptions, type InsertLead } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -29,6 +36,8 @@ export function UnifiedForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [playingVoice, setPlayingVoice] = useState<string | null>(null);
+  const [showAssistantInfo, setShowAssistantInfo] = useState(false);
+  const [selectedAssistantInfo, setSelectedAssistantInfo] = useState<keyof typeof assistantDetails | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const form = useForm<InsertLead>({
@@ -79,6 +88,12 @@ export function UnifiedForm() {
         setPlayingVoice(null);
       };
     }
+  };
+
+  const handleAssistantChange = (value: string, onChange: (value: string) => void) => {
+    onChange(value);
+    setSelectedAssistantInfo(value as keyof typeof assistantDetails);
+    setShowAssistantInfo(true);
   };
 
   const onSubmit = async (data: InsertLead) => {
@@ -173,7 +188,10 @@ export function UnifiedForm() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Tipo de Asistente</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select 
+                          onValueChange={(value) => handleAssistantChange(value, field.onChange)} 
+                          value={field.value}
+                        >
                           <FormControl>
                             <SelectTrigger className="bg-background border-border relative z-20">
                               <SelectValue placeholder="Selecciona uno" />
@@ -290,6 +308,64 @@ export function UnifiedForm() {
           </div>
         </div>
       </div>
+
+      {/* Modal de información del asistente */}
+      <Dialog open={showAssistantInfo} onOpenChange={setShowAssistantInfo}>
+        <DialogContent className="sm:max-w-[600px] bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-primary flex items-center gap-2">
+              <Info className="w-6 h-6" />
+              {selectedAssistantInfo && assistantDetails[selectedAssistantInfo].businessName}
+            </DialogTitle>
+            <DialogDescription className="text-base text-muted-foreground">
+              {selectedAssistantInfo && assistantDetails[selectedAssistantInfo].role}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedAssistantInfo && (
+            <div className="space-y-6 py-4">
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">Acerca de este asistente:</h4>
+                <p className="text-muted-foreground">
+                  {assistantDetails[selectedAssistantInfo].description}
+                </p>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-foreground mb-3">¿Qué puede hacer?</h4>
+                <ul className="space-y-2">
+                  {assistantDetails[selectedAssistantInfo].capabilities.map((capability, index) => (
+                    <li key={index} className="flex items-start gap-2 text-muted-foreground">
+                      <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span>{capability}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-secondary/50 p-4 rounded-lg border border-border">
+                <h4 className="font-semibold text-foreground mb-2">Ejemplos de preguntas que puedes hacer:</h4>
+                <ul className="space-y-2">
+                  {assistantDetails[selectedAssistantInfo].exampleQuestions.map((question, index) => (
+                    <li key={index} className="text-sm text-muted-foreground italic">
+                      "{question}"
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={() => setShowAssistantInfo(false)}
+                  className="w-full h-12 rounded-lg font-semibold bg-primary text-black hover:bg-primary/90 transition-all"
+                >
+                  Entendido, continuar
+                </button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
