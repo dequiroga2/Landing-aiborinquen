@@ -311,13 +311,13 @@ export function UnifiedForm() {
 
       {/* Modal de información del asistente */}
       <Dialog open={showAssistantInfo} onOpenChange={setShowAssistantInfo}>
-        <DialogContent className="sm:max-w-[600px] bg-card border-border">
+        <DialogContent className="sm:max-w-[600px] bg-black border-primary/30">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-primary flex items-center gap-2">
               <Info className="w-6 h-6" />
               {selectedAssistantInfo && assistantDetails[selectedAssistantInfo].businessName}
             </DialogTitle>
-            <DialogDescription className="text-base text-muted-foreground">
+            <DialogDescription className="text-base text-gray-300">
               {selectedAssistantInfo && assistantDetails[selectedAssistantInfo].role}
             </DialogDescription>
           </DialogHeader>
@@ -325,17 +325,17 @@ export function UnifiedForm() {
           {selectedAssistantInfo && (
             <div className="space-y-6 py-4">
               <div>
-                <h4 className="font-semibold text-foreground mb-2">Acerca de este asistente:</h4>
-                <p className="text-muted-foreground">
+                <h4 className="font-semibold text-white mb-2">Acerca de este asistente:</h4>
+                <p className="text-gray-300">
                   {assistantDetails[selectedAssistantInfo].description}
                 </p>
               </div>
 
               <div>
-                <h4 className="font-semibold text-foreground mb-3">¿Qué puede hacer?</h4>
+                <h4 className="font-semibold text-white mb-3">¿Qué puede hacer?</h4>
                 <ul className="space-y-2">
                   {assistantDetails[selectedAssistantInfo].capabilities.map((capability, index) => (
-                    <li key={index} className="flex items-start gap-2 text-muted-foreground">
+                    <li key={index} className="flex items-start gap-2 text-gray-300">
                       <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                       <span>{capability}</span>
                     </li>
@@ -343,11 +343,11 @@ export function UnifiedForm() {
                 </ul>
               </div>
 
-              <div className="bg-secondary/50 p-4 rounded-lg border border-border">
-                <h4 className="font-semibold text-foreground mb-2">Ejemplos de preguntas que puedes hacer:</h4>
+              <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+                <h4 className="font-semibold text-white mb-2">Ejemplos de preguntas que puedes hacer:</h4>
                 <ul className="space-y-2">
                   {assistantDetails[selectedAssistantInfo].exampleQuestions.map((question, index) => (
-                    <li key={index} className="text-sm text-muted-foreground italic">
+                    <li key={index} className="text-sm text-gray-300 italic">
                       "{question}"
                     </li>
                   ))}
