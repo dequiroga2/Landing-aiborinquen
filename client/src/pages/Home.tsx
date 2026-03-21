@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
-  const calendlyUrl = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/";
+  const calendlyUrl = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/d/ctmq-8v3-prj/video-llamada-por-zoom-team?utm_source=embudo";
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary/30">
