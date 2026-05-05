@@ -17,7 +17,8 @@ export default function Home() {
       
       <main>
         <Hero />
-        
+        <UnifiedForm />
+
         {/* Features / Value Props Divider */}
         <section className="py-12 border-y border-white/5 bg-white/[0.02]">
           <div className="container mx-auto px-4">
@@ -39,7 +40,6 @@ export default function Home() {
 
         <ForWhom />
         <HowItWorks />
-        <UnifiedForm />
         <FAQ />
 
         <section className="py-20 bg-gradient-to-b from-background to-secondary/40 border-t border-white/5">
