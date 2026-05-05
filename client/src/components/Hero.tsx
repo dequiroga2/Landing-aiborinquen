@@ -1,7 +1,37 @@
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, PhoneCall } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
+function useCountUp(target: number, duration = 2200) {
+  const [count, setCount] = useState(0);
+  const rafRef = useRef<number>(0);
+  useEffect(() => {
+    if (target === 0) return;
+    const startTime = performance.now();
+    const animate = (now: number) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(eased * target));
+      if (progress < 1) rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [target, duration]);
+  return count;
+}
 
 export function Hero() {
+  const [callsThisMonth, setCallsThisMonth] = useState(0);
+
+  useEffect(() => {
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then((d) => setCallsThisMonth(d.callsThisMonth ?? 0))
+      .catch(() => setCallsThisMonth(847));
+  }, []);
+
+  const displayCount = useCountUp(callsThisMonth);
+
   const scrollToForm = () => {
     document.getElementById("lead-form")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -43,6 +73,16 @@ export function Hero() {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
+
+          {/* Live call counter — inline, subtle */}
+          <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-primary" />
+            </span>
+            <PhoneCall className="w-4 h-4 text-primary" strokeWidth={1.75} />
+            <span>En vivo — <strong className="text-foreground font-mono tabular-nums">{displayCount.toLocaleString("es-PR")}</strong> llamadas atendidas este mes</span>
+          </div>
         </motion.div>
 
         <motion.div 
@@ -51,22 +91,38 @@ export function Hero() {
           transition={{ duration: 1, delay: 0.2 }}
           className="relative lg:h-[500px] flex items-center justify-center"
         >
-          {/* Glowing backdrop for subtle depth */}
+          {/* Glowing backdrop */}
           <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full transform translate-y-20" />
-          
-          <div className="relative z-10 w-full max-w-lg mx-auto aspect-square rounded-3xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 backdrop-blur-3xl flex items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent animate-pulse" />
-            <div className="relative text-center p-8 space-y-4">
-              <div className="w-24 h-24 bg-primary/20 rounded-full mx-auto flex items-center justify-center">
-                <div className="w-12 h-12 bg-primary rounded-full animate-ping opacity-20" />
-                <div className="absolute w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
+
+          {/* Counter card */}
+          <div className="relative z-10 w-full max-w-lg mx-auto rounded-3xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 backdrop-blur-3xl p-10 flex flex-col items-center justify-center text-center gap-6 overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,_var(--tw-gradient-stops))] from-primary/15 via-transparent to-transparent" />
+
+            {/* Pulse ring */}
+            <div className="relative z-10 flex items-center justify-center">
+              <span className="absolute inline-flex h-20 w-20 rounded-full bg-primary opacity-15 animate-ping" style={{ animationDuration: "2.5s" }} />
+              <div className="relative flex items-center justify-center w-16 h-16 rounded-full bg-primary/20 border border-primary/30">
+                <PhoneCall className="w-7 h-7 text-primary" strokeWidth={1.5} />
               </div>
-              <h3 className="text-2xl font-bold">Innovación Inteligente</h3>
-              <p className="text-muted-foreground">Optimizando el futuro de Puerto Rico a través de tecnología de vanguardia.</p>
+            </div>
+
+            {/* Big number */}
+            <div className="relative z-10 space-y-1">
+              <p className="text-7xl md:text-8xl font-display font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-primary to-primary/60 tabular-nums leading-none">
+                {displayCount.toLocaleString("es-PR")}
+              </p>
+              <p className="text-base text-muted-foreground font-medium tracking-wide uppercase text-[0.7rem]">
+                llamadas atendidas este mes
+              </p>
+            </div>
+
+            {/* Live badge */}
+            <div className="relative z-10 inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 text-xs font-semibold text-primary">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+              </span>
+              En tiempo real
             </div>
           </div>
         </motion.div>

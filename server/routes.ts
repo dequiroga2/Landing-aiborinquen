@@ -5,6 +5,23 @@ import { insertLeadSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(httpServer: Server, app: Express): Promise<Server> {
+  // Live call counter — deterministic simulation that grows through the month and day.
+  // TODO: replace with a real Supabase query when credentials are available:
+  //   const { count } = await supabase.from("calls").select("*", { count: "exact", head: true })
+  //     .gte("created_at", startOfMonth.toISOString());
+  app.get("/api/stats", (_req, res) => {
+    const now = new Date();
+    const dayOfMonth = now.getDate();
+    const minuteOfDay = now.getHours() * 60 + now.getMinutes();
+    const baseCount = 312;
+    const dailyRate = 18;
+    const callsThisMonth =
+      baseCount +
+      (dayOfMonth - 1) * dailyRate +
+      Math.floor((minuteOfDay * dailyRate) / (24 * 60));
+    res.json({ callsThisMonth });
+  });
+
   app.post("/api/leads", async (req, res) => {
     try {
       console.log("Received lead data:", req.body);

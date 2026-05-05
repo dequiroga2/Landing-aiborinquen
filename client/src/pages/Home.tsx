@@ -2,8 +2,10 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { UnifiedForm } from "@/components/UnifiedForm";
 import { Footer } from "@/components/Footer";
+import { ForWhom } from "@/components/ForWhom";
+import { HowItWorks } from "@/components/HowItWorks";
+import { FAQ } from "@/components/FAQ";
 import { ArrowRight } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
@@ -35,7 +37,10 @@ export default function Home() {
           </div>
         </section>
 
+        <ForWhom />
+        <HowItWorks />
         <UnifiedForm />
+        <FAQ />
 
         <section className="py-20 bg-gradient-to-b from-background to-secondary/40 border-t border-white/5">
           <div className="container mx-auto px-4">
@@ -47,24 +52,7 @@ export default function Home() {
                 Nuestro equipo está listo para ayudarte a implementar una estrategia de IA personalizada.
               </p>
 
-              <div className="mt-8 flex items-center justify-center">
-                <div className="flex -space-x-3">
-                  {[
-                    "AQ",
-                    "IA",
-                    "PR",
-                    "AI",
-                  ].map((initials, index) => (
-                    <Avatar key={initials + index} className="h-14 w-14 border-2 border-background shadow-sm">
-                      <AvatarFallback className="bg-secondary text-foreground font-semibold text-sm">
-                        {initials}
-                      </AvatarFallback>
-                    </Avatar>
-                  ))}
-                </div>
-              </div>
-
-              <p className="mt-5 text-muted-foreground">Agenda una llamada y te mostramos cómo aplicarlo a tu negocio.</p>
+              <p className="mt-8 text-muted-foreground">Agenda una llamada y te mostramos cómo aplicarlo a tu negocio.</p>
 
               <div className="mt-8">
                 <Button
