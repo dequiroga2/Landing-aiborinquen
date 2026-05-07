@@ -110,7 +110,7 @@ export function Hero() {
               onClick={scrollToForm}
               className="group px-8 py-4 bg-primary text-black font-bold rounded-xl hover:bg-primary/90 transition-all duration-300 shadow-[0_0_20px_rgba(0,255,0,0.3)] hover:shadow-[0_0_30px_rgba(0,255,0,0.5)] flex items-center justify-center gap-2"
             >
-              Probar Asistente
+              Recibe la llamada demo
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>

@@ -21,7 +21,7 @@ const faqs = [
   },
   {
     q: "Yo no soy técnico. ¿Esto va a ser complicado?",
-    a: "Tú no tocas nada. Nosotros hacemos la integración completa con tu línea, WhatsApp, calendario y CRM. Recibes un dashboard simple para ver llamadas, citas y grabaciones. Si quieres cambiar un precio, horario u oferta, nos avisas y lo actualizamos en 24 horas. De inicio a go-live: 7 días.",
+    a: "Tú no tocas nada. Nosotros hacemos la integración completa con tu línea, WhatsApp, calendario y CRM. Recibes un dashboard simple para ver llamadas, citas y grabaciones. Si quieres cambiar un precio, horario u oferta, nos avisas y lo actualizamos en 24 horas. De inicio a go-live: 15 días.",
   },
   {
     q: "Suena bien pero necesito pensarlo. ¿Qué hago?",
@@ -32,7 +32,7 @@ const faqs = [
 const HIGHLIGHTS = [
   "garantía de 30 días",
   "30 días",
-  "7 días",
+  "15 días",
   "24 horas",
   "50 llamadas",
   "15 citas",

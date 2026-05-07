@@ -279,7 +279,7 @@ export function UnifiedForm() {
                   ) : isSuccess ? (
                     <><CheckCircle2 /> ¡Llamada en camino!</>
                   ) : (
-                    <><Phone className="w-5 h-5" /> Llamame Ahora</>
+                    <><Phone className="w-5 h-5" /> Recibe la llamada demo</>
                   )}
                 </button>
               </form>
@@ -298,12 +298,13 @@ export function UnifiedForm() {
                 <li>• Sin compromiso, solo una demostración tecnológica</li>
               </ul>
             </div>
-            <div className="relative aspect-video rounded-2xl overflow-hidden border border-primary/20 bg-black flex items-center justify-center group">
-               <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors" />
-               <Phone className="w-16 h-16 text-primary animate-pulse" />
-               <div className="absolute bottom-4 left-4 right-4 text-center">
-                 <p className="text-sm font-medium text-primary/80 uppercase tracking-widest">Demostración en Vivo</p>
-               </div>
+            <div className="p-6 bg-card border border-primary/20 rounded-2xl">
+              <h3 className="text-xl font-bold mb-3 flex items-center gap-2 text-primary">
+                <CheckCircle2 className="w-5 h-5" /> Garantía de implementación
+              </h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Si en <strong className="text-primary font-semibold">15 días</strong> tu asistente no está activo y funcionando, te devolvemos el setup completo — sin preguntas.
+              </p>
             </div>
           </div>
         </div>
