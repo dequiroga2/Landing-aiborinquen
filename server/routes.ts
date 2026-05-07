@@ -14,7 +14,8 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       .single();
 
     if (error || !data) {
-      return res.status(500).json({ error: "Failed to fetch counter" });
+      console.error("Supabase stats error:", JSON.stringify(error));
+      return res.status(500).json({ error: "Failed to fetch counter", detail: error?.message });
     }
     res.setHeader("Cache-Control", "no-store");
     return res.json({ callsThisMonth: data.count });
