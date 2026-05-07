@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, PhoneCall } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 function useCountUp(target: number, duration = 2200) {
   const [count, setCount] = useState(0);
@@ -24,10 +25,50 @@ export function Hero() {
   const [callsThisMonth, setCallsThisMonth] = useState(0);
 
   useEffect(() => {
+    // 1. Load initial value
     fetch("/api/stats")
       .then((r) => r.json())
-      .then((d) => setCallsThisMonth(d.callsThisMonth ?? 0))
-      .catch(() => setCallsThisMonth(847));
+      .then((d) => {
+        const serverVal: number = d.callsThisMonth ?? 0;
+        const stored = parseInt(localStorage.getItem("calls_count") ?? "0", 10);
+        const initial = Math.max(serverVal, stored);
+        setCallsThisMonth(initial);
+        localStorage.setItem("calls_count", String(initial));
+      })
+      .catch(() => {
+        const stored = parseInt(localStorage.getItem("calls_count") ?? "847", 10);
+        setCallsThisMonth(stored);
+      });
+
+    // 2. Subscribe to real-time updates from Supabase
+    const channel = supabase
+      .channel("call_counter_changes")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "call_counter", filter: "id=eq.1" },
+        (payload) => {
+          const newCount: number = (payload.new as { count: number }).count;
+          setCallsThisMonth((prev) => {
+            const next = Math.max(prev, newCount);
+            localStorage.setItem("calls_count", String(next));
+            return next;
+          });
+        }
+      )
+      .subscribe();
+
+    // Client-side trigger: calls /api/increment every 10s with ~15% chance
+    // so the visible cadence is ~1 new call every ~1 min regardless of how many tabs are open
+    const ticker = setInterval(() => {
+      if (Math.random() < 0.15) {
+        fetch("/api/increment", { method: "POST" }).catch(() => {});
+      }
+    }, 10_000);
+
+    return () => {
+      supabase.removeChannel(channel);
+      clearInterval(ticker);
+    };
   }, []);
 
   const displayCount = useCountUp(callsThisMonth);

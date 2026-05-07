@@ -1,5 +1,12 @@
 {
   "buildCommand": "npm run build:vercel",
   "outputDirectory": "dist/public",
-  "framework": "vite"
+  "framework": "vite",
+  "crons": [
+    {
+      "path": "/api/increment",
+      "schedule": "* * * * *"
+    }
+  ]
 }
+

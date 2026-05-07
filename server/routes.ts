@@ -3,23 +3,21 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertLeadSchema } from "@shared/schema";
 import { z } from "zod";
+import { supabaseAdmin } from "./supabase";
 
 export async function registerRoutes(httpServer: Server, app: Express): Promise<Server> {
-  // Live call counter — deterministic simulation that grows through the month and day.
-  // TODO: replace with a real Supabase query when credentials are available:
-  //   const { count } = await supabase.from("calls").select("*", { count: "exact", head: true })
-  //     .gte("created_at", startOfMonth.toISOString());
-  app.get("/api/stats", (_req, res) => {
-    const now = new Date();
-    const dayOfMonth = now.getDate();
-    const minuteOfDay = now.getHours() * 60 + now.getMinutes();
-    const baseCount = 312;
-    const dailyRate = 18;
-    const callsThisMonth =
-      baseCount +
-      (dayOfMonth - 1) * dailyRate +
-      Math.floor((minuteOfDay * dailyRate) / (24 * 60));
-    res.json({ callsThisMonth });
+  app.get("/api/stats", async (_req, res) => {
+    const { data, error } = await supabaseAdmin
+      .from("call_counter")
+      .select("count")
+      .eq("id", 1)
+      .single();
+
+    if (error || !data) {
+      return res.status(500).json({ error: "Failed to fetch counter" });
+    }
+    res.setHeader("Cache-Control", "no-store");
+    return res.json({ callsThisMonth: data.count });
   });
 
   app.post("/api/leads", async (req, res) => {
