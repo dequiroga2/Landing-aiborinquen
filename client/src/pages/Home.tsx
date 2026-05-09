@@ -10,7 +10,7 @@ import { ArrowRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
-  const calendlyUrl = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/d/ctmq-8v3-prj/video-llamada-por-zoom-team?utm_source=embudo";
+  const calendlyUrl = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/aiborinquen/aib?utm_source=IGperfil";
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary/30">
